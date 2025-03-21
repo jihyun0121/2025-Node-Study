@@ -13,8 +13,12 @@ app.get('/swag', (req, res) => {
   res.send('get swag');
 });
 
-app.post('/swag', (req, res) => {
-  res.send(req.body);
+// app.post('/swag', (req, res) => {
+//   res.send(req.body);
+// });
+
+app.get('/swag/:person', (req, res) => {
+  res.send(req.params.person);
 });
 
 app.listen(port, () => {
