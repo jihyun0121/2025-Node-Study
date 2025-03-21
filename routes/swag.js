@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.send('get swag');
+    res.send('get swag');
 });
 
 router.get('/:person', (req, res) => {
@@ -11,7 +11,7 @@ router.get('/:person', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  res.send(req.body);
+    res.send(req.body);
 });
 
 module.exports = router;
