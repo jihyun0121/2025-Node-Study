@@ -2,16 +2,19 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-app.get('/', (req, res) => {
-  res.send('Hello, World!\n');
-});
+app.use(express.json());
+
+// app.get('/', (req, res) => {
+//   res.send('Hello, World!\n');
+// });
+
 
 app.get('/swag', (req, res) => {
   res.send('get swag');
 });
 
 app.post('/swag', (req, res) => {
-  res.send('post swag');
+  res.send(req.body);
 });
 
 app.listen(port, () => {
