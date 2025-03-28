@@ -29,13 +29,20 @@ db.connect(error => {
     console.log('MySQL에 연결 되었습니다.');
 });
 
-
-
 app.get('/', (req, res) => {
     res.render('home');
 });
 
 app.get('/travel', (req, res) => {
+    const query = 'SELECT id, name FROM travellist';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('데이터베이스 쿼리 실패');
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        travelList = results;
+    });
     res.render('travel', {travelList});
 });
 
