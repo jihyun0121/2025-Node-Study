@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/travel', (req, res) => {
-    const query = 'SELECT id, name FROM travellist';
+    const query = 'SELECT id, name FROM travelList';
     db.query(query, (err, results) => {
         if (err) {
             console.error('데이터베이스 쿼리 실패');
@@ -44,6 +44,24 @@ app.get('/travel', (req, res) => {
         travelList = results;
     });
     res.render('travel', {travelList});
+});
+
+app.get('/travel/:id', (req, res) => {
+    const travelID = req.params.id;
+    const query = 'SELECT * FROM travellist WHERE id = ?';
+    db.query(query,[travelID], (err, results) => {
+        if(err) {
+            console.error('DB 쿼리 실패: ', err);
+            res.status(500).send('내부 서버 에러');
+            return;
+        }
+        if(results.length === 0) {
+            res.status(404).send('여행지를 찾을 수 없습니다.');
+            return;
+        }
+        const travel = results[0];
+        res.render('travelDetail', {travel});
+    })
 });
 
 app.listen(3001, () => {
