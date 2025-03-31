@@ -49,7 +49,7 @@ app.get('/travel', (req, res) => {
 app.get('/travel/:id', (req, res) => {
     const travelID = req.params.id;
     const query = 'SELECT * FROM travellist WHERE id = ?';
-    db.query(query,[travelID], (err, results) => {
+    db.query(query,[travelID], (err, results) => {  //sql 인젝션 방지
         if(err) {
             console.error('DB 쿼리 실패: ', err);
             res.status(500).send('내부 서버 에러');
