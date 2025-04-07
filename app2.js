@@ -79,6 +79,24 @@ app.post('/travel',(req,res)=>{
     })
 })
 
+app.put('/travel/:id',(req,res)=> {
+    const travelID = req.params.id;
+    const {name} = req.body;
+    const _query = 'UPDATE travelList SET name = ? WHERE id = ?';
+    db.query(_query, [name, travelID], (err, results)=> {
+        if (err) {
+            console.error('DB 쿼리 실패',err);
+            res.status(500).send('내부 서버 에러');
+            return;
+        }
+        if(results.length === 0) {
+            res.status(404).send('여행지를 찾을 수 없습니다.');
+            return;
+        }
+        res.render('updateSuccess');
+    })
+})
+
 app.get('/add-travel',(req,res)=>{
     res.render('addTravel');
 })
