@@ -1,57 +1,54 @@
-const { error } = require('console');
 const express = require('express');
 const path = require('path');
+const app = express();
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
 
 dotenv.config();
-const app = express();
 
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,
+    host : process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME
-});
+})
 
-travelList = ['뉴욕', '파리', '서울', '도쿄'];
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
-app.set('view engine', 'ejs');
-// _dirname : 현재 파일이 속한 절대경로
-// path.join()을 사용하면 운영체제에 맞추어 경로 구분자(/, \)를 알아서 정해준다
-app.set('views', path.join(__dirname, 'views'));
+app.set('view engine','ejs');
 
-db.connect(error => {
-    if (error) {
-        console.log('MySQL 연결 실패: ', error);
+// __dirname : 현재 파일이 속한 절대 경로
+// path.join을 사용하면 운영체제에 맞추어 경로 구분자(/,\)를 알아서 정해준다.
+app.set('views',path.join(__dirname,'views'));
+
+db.connect(err=> {
+    if (err) {
+        console.err("mysql 연결 실패 : ",err);
         return;
     }
-    console.log('MySQL에 연결 되었습니다.');
-});
+    console.log("mysql에 연결되었습니다.")
+})
 
-app.get('/', (req, res) => {
-    res.render('home');
-});
-
-app.get('/travel', (req, res) => {
+app.get('/travel',(req,res)=>{
     const query = 'SELECT id, name FROM travelList';
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error('데이터베이스 쿼리 실패');
+    db.query(query, (err, results)=>{
+        if(err) {
+            console.error('데이터베이스 쿼리 실패 : ', err);
             res.status(500).send('Internal Server Error');
             return;
         }
-        travelList = results;
-    });
-    res.render('travel', {travelList});
-});
+        const travelList = results;
+        res.render('travel',{travelList})
+    })
+})
 
-app.get('/travel/:id', (req, res) => {
+app.get('/travel/:id',(req,res)=> {
     const travelID = req.params.id;
-    const query = 'SELECT * FROM travellist WHERE id = ?';
-    db.query(query,[travelID], (err, results) => {  //sql 인젝션 방지
-        if(err) {
-            console.error('DB 쿼리 실패: ', err);
+    const _query = 'SELECT * FROM travelList WHERE id = ?';
+    db.query(_query, [travelID], (err, results)=> {
+        if (err) {
+            console.error('DB 쿼리 실패',err);
             res.status(500).send('내부 서버 에러');
             return;
         }
@@ -60,15 +57,34 @@ app.get('/travel/:id', (req, res) => {
             return;
         }
         const travel = results[0];
-        res.render('travelDetail', {travel});
+        res.render('travelDetail',{travel});
     })
+})
+
+app.get('/', (req, res) => {
+    res.render('home');
 });
 
-// use : 모든 methoid에 대해 , 경로가 없으면 : 모든 경로에 대해
-app.use((req, res) => {
-    res.status(404).render('error', {error: '404 Not Found'});
-});
+
+app.post('/travel',(req,res)=>{
+    const {name} = req.body;
+    const _query = 'INSERT INTO travelList (name) VALUES (?)';
+    db.query(_query,[name],(err,results)=>{
+        if(err) {
+            console.error('데이터베이스 쿼리 실패 : ', err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        res.redirect('/travel');
+    })
+})
+
+// use : 모든 method에 대해, 경로가 없으면? : 모든 경로에 대해
+app.use((req,res)=>{
+    res.status(404).send('사공사 낫파운드');
+})
 
 app.listen(3001, () => {
-    console.log(`서버가 http://localhost:3001 에서 실행 중입니다.`);
-  });
+    console.log('서버가 http://localhost:3001 에서 실행 중입니다.');
+});
+  
