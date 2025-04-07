@@ -4,6 +4,8 @@ const app = express();
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
 
+const port = 3001;
+
 dotenv.config();
 
 const db = mysql.createConnection({
@@ -101,12 +103,11 @@ app.get('/add-travel',(req,res)=>{
     res.render('addTravel');
 })
 
-// use : 모든 method에 대해, 경로가 없으면? : 모든 경로에 대해
 app.use((req,res)=>{
-    res.status(404).send('사공사 낫파운드');
+    res.status(404).send('404 Not Found');
 })
 
-app.listen(3001, () => {
-    console.log('서버가 http://localhost:3001 에서 실행 중입니다.');
+app.listen(port, () => {
+    console.log(`서버가 http://localhost:${port} 에서 실행 중입니다.`);
 });
   
