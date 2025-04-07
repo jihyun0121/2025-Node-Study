@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="kor">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>여행가자</title>
@@ -7,11 +7,12 @@
 <body>
     <h1>여행지 목록</h1>
     <ul>
-        <% travelList.forEach(travel => { %>
-            <li>
-                <a href="/travel/<%= travel.id %>"><%= travel.name %></a>
+       <% travelList.forEach (travel => { %>
+            <li> 
+                <a href="/travel/ <%= travel.id%>"> <%= travel.name %> </a>
             </li>
-        <% }); %>
+        <% }) %>
     </ul>
+    <a href="/add-travel">여행지추가</a>
 </body>
 </html>
