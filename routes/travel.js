@@ -142,6 +142,10 @@ app.delete('/travel/:id', (req, res) => {
             res.status(500).send('Internal Server Error');
             return;
         }
+        if(results.length===0){
+            res.status(404).send('Not Found');
+            return;
+        }
         res.render('deleteSuccess'); // 삭제 성공 페이지로 렌더링
     });
 });
