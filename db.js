@@ -9,12 +9,14 @@ const db = mysql.createConnection({
     database: process.env.DB_NAME
 })
 
-db.connect(err=> {
+db.connect(err => {
     if (err) {
-        console.err("mysql 연결 실패 : ", err);
+        console.error("mysql 연결 실패 : ", err);
         return;
     }
     console.log("mysql에 연결되었습니다.")
 })
+
+db.query = util.promisify(db.query);
 
 module.exports = db;
